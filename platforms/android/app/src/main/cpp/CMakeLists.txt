@@ -3,15 +3,18 @@ project(NoitaEngineAndroid)
 
 set(CMAKE_CXX_STANDARD 17)
 
+# Путь к корню всего проекта (поднимаемся выше из app/src/main/cpp)
+set(PROJECT_ROOT ${CMAKE_CURRENT_SOURCE_DIR}/../../../../..)
+
 # Исходники ядра
 set(CORE_SOURCES
-    ../../../../../../core/noita_core.cpp
-    ../../../../../../core/noita_core.hpp
+    ${PROJECT_ROOT}/core/noita_core.cpp
+    ${PROJECT_ROOT}/core/noita_core.hpp
 )
 
 # Исходники приложения
 set(APP_SOURCES
-    ../../../../../../platforms/desktop/main.cpp
+    ${PROJECT_ROOT}/platforms/desktop/main.cpp
 )
 
 # Подключаем Raylib
@@ -23,8 +26,8 @@ add_library(noita_engine_android SHARED
 )
 
 target_include_directories(noita_engine_android PRIVATE
-    ../../../../../../core
-    raylib/src
+    ${PROJECT_ROOT}/core
+    ${CMAKE_CURRENT_SOURCE_DIR}/raylib/src
 )
 
 # Необходимые системные библиотеки Android
