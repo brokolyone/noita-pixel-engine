@@ -30,8 +30,9 @@ jobs:
     - name: Download Raylib
       run: |
         git clone --depth 1 https://github.com/raysan5/raylib.git platforms/android/app/src/main/cpp/raylib
-        # Понижаем требования CMake в Raylib с 3.25 до 3.22
-        sed -i 's/cmake_minimum_required(VERSION 3.25)/cmake_minimum_required(VERSION 3.22)/g' platforms/android/app/src/main/cpp/raylib/CMakeLists.txt
+        # Понижаем требования CMake во всех файлах Raylib
+        find platforms/android/app/src/main/cpp/raylib -name "CMakeLists.txt" -exec sed -i 's/cmake_minimum_required(VERSION 3.25)/cmake_minimum_required(VERSION 3.10)/g' {} +
+        find platforms/android/app/src/main/cpp/raylib -name "CMakeLists.txt" -exec sed -i 's/cmake_minimum_required(VERSION 3.12)/cmake_minimum_required(VERSION 3.10)/g' {} +
 
     - name: Clean Manifest
       run: |
