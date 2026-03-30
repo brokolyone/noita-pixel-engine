@@ -38,8 +38,8 @@ jobs:
 
     - name: Build with Gradle
       run: |
-        cd platforms/android/app
-        gradle assembleDebug
+        cd platforms/android
+        gradle :app:assembleDebug
 
     - name: Upload APK
       uses: actions/upload-artifact@v4
