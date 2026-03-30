@@ -16,16 +16,23 @@ namespace Noita {
 
         // Идем снизу вверх (чтобы песок падал корректно)
         for (int y = m_height - 1; y >= 0; --y) {
-            for (int x = 0; x < m_width; ++x) {
-                auto& p = m_particles[y * m_width + x];
-                if (p.updated || p.type == ParticleType::AIR || p.type == ParticleType::WALL) continue;
-
-                if (p.type == ParticleType::SAND) {
-                    UpdateSand(x, y);
-                } else if (p.type == ParticleType::WATER) {
-                    UpdateWater(x, y);
-                } else if (p.type == ParticleType::FIRE) {
-                    UpdateFire(x, y);
+            // Случайное направление по X (влево или вправо), чтобы не было смещения в одну сторону
+            bool leftToRight = (rand() % 2 == 0);
+            if (leftToRight) {
+                for (int x = 0; x < m_width; ++x) {
+                    auto& p = m_particles[y * m_width + x];
+                    if (p.updated || p.type == ParticleType::AIR || p.type == ParticleType::WALL) continue;
+                    if (p.type == ParticleType::SAND) UpdateSand(x, y);
+                    else if (p.type == ParticleType::WATER) UpdateWater(x, y);
+                    else if (p.type == ParticleType::FIRE) UpdateFire(x, y);
+                }
+            } else {
+                for (int x = m_width - 1; x >= 0; --x) {
+                    auto& p = m_particles[y * m_width + x];
+                    if (p.updated || p.type == ParticleType::AIR || p.type == ParticleType::WALL) continue;
+                    if (p.type == ParticleType::SAND) UpdateSand(x, y);
+                    else if (p.type == ParticleType::WATER) UpdateWater(x, y);
+                    else if (p.type == ParticleType::FIRE) UpdateFire(x, y);
                 }
             }
         }
@@ -117,6 +124,16 @@ namespace Noita {
     void World::SetParticle(int x, int y, ParticleType type) {
         if (x < 0 || x >= m_width || y < 0 || y >= m_height) return;
         m_particles[y * m_width + x] = { type, GetColorForType(type), false };
+    }
+
+    void World::SetParticleCircle(int x, int y, int radius, ParticleType type) {
+        for (int i = -radius; i <= radius; ++i) {
+            for (int j = -radius; j <= radius; ++j) {
+                if (i * i + j * j <= radius * radius) {
+                    SetParticle(x + i, y + j, type);
+                }
+            }
+        }
     }
 
     const uint32_t* World::GetPixels() const {

@@ -37,6 +37,7 @@ namespace Noita {
 
         void Update();
         void SetParticle(int x, int y, ParticleType type);
+        void SetParticleCircle(int x, int y, int radius, ParticleType type);
         const uint32_t* GetPixels() const;
 
         int GetWidth() const { return m_width; }

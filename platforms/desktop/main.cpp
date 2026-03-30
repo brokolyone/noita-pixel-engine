@@ -24,6 +24,7 @@ int main() {
     Texture2D texture = LoadTextureFromImage(image);
 
     Noita::ParticleType currentType = Noita::ParticleType::SAND;
+    int brushRadius = 3;
 
     while (!WindowShouldClose()) {
         // Управление: рисуем частицы
@@ -31,8 +32,12 @@ int main() {
             Vector2 mousePos = GetMousePosition();
             int x = (int)(mousePos.x / GetScreenWidth() * worldWidth);
             int y = (int)(mousePos.y / GetScreenHeight() * worldHeight);
-            world.SetParticle(x, y, currentType);
+            world.SetParticleCircle(x, y, brushRadius, currentType);
         }
+
+        // Изменение размера кисти
+        if (IsKeyPressed(KEY_RIGHT_BRACKET)) brushRadius++;
+        if (IsKeyPressed(KEY_LEFT_BRACKET) && brushRadius > 0) brushRadius--;
 
         // Переключение типов
         if (IsKeyPressed(KEY_ONE)) currentType = Noita::ParticleType::SAND;
@@ -54,10 +59,10 @@ int main() {
         // Рисуем текстуру растянутой на весь экран
         DrawTexturePro(texture, 
             { 0, 0, (float)worldWidth, (float)worldHeight },
-            { 0, 0, (float)screenWidth, (float)screenHeight },
+            { 0, 0, (float)GetScreenWidth(), (float)GetScreenHeight() },
             { 0, 0 }, 0.0f, WHITE);
 
-        DrawText("1: Sand | 2: Water | 3: Wall | 4: Erase | 5: Fire", 10, 10, 20, RAYWHITE);
+        DrawText(TextFormat("Brush: %d | 1-5: Type | []: Size", brushRadius), 10, 10, 20, RAYWHITE);
         EndDrawing();
     }
 
