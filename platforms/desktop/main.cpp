@@ -29,8 +29,8 @@ int main() {
         // Управление: рисуем частицы
         if (IsMouseButtonDown(MOUSE_LEFT_BUTTON)) {
             Vector2 mousePos = GetMousePosition();
-            int x = (int)(mousePos.x / screenWidth * worldWidth);
-            int y = (int)(mousePos.y / screenHeight * worldHeight);
+            int x = (int)(mousePos.x / GetScreenWidth() * worldWidth);
+            int y = (int)(mousePos.y / GetScreenHeight() * worldHeight);
             world.SetParticle(x, y, currentType);
         }
 
