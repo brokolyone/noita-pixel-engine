@@ -30,6 +30,13 @@ jobs:
     - name: Download Raylib
       run: |
         git clone --depth 1 https://github.com/raysan5/raylib.git platforms/android/app/src/main/cpp/raylib
+        # Понижаем требования CMake в Raylib с 3.25 до 3.22
+        sed -i 's/cmake_minimum_required(VERSION 3.25)/cmake_minimum_required(VERSION 3.22)/g' platforms/android/app/src/main/cpp/raylib/CMakeLists.txt
+
+    - name: Clean Manifest
+      run: |
+        # Удаляем атрибут package из манифеста, так как он задан в build.gradle
+        sed -i 's/package="com.noita.pixelengine"//g' platforms/android/app/src/main/AndroidManifest.xml
 
     - name: Build with Gradle
       run: |
