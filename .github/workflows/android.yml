@@ -27,14 +27,9 @@ jobs:
       with:
         ndk-version: r25c
 
-    - name: Download and Build Raylib for Android
+    - name: Download Raylib
       run: |
-        git clone --depth 1 https://github.com/raysan5/raylib.git raylib_src
-        cd raylib_src/src
-        make PLATFORM=PLATFORM_ANDROID ANDROID_NDK=$ANDROID_NDK_ROOT ANDROID_ARCH=arm64 ANDROID_API=24
-        mkdir -p ../../lib/arm64-v8a
-        cp libraylib.a ../../lib/arm64-v8a/
-        cd ../..
+        git clone --depth 1 https://github.com/raysan5/raylib.git platforms/android/app/src/main/cpp/raylib
 
     - name: Build with Gradle
       run: |
