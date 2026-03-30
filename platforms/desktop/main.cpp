@@ -11,9 +11,16 @@ int main() {
     InitWindow(screenWidth, screenHeight, "Noita-like Engine Prototype");
     SetTargetFPS(60);
 
-    Noita::World world(worldWidth, worldHeight);
+    // Ждем, пока окно реально инициализируется (важно для Android)
+    while (!IsWindowReady()) {
+        BeginDrawing();
+        ClearBackground(BLACK);
+        EndDrawing();
+    }
 
-    // Текстура для отображения пикселей мира
+    Noita::World world(worldWidth, worldHeight);
+    
+    // ... остальной код текстуры ...
     Image image = {
         .data = (void*)world.GetPixels(),
         .width = worldWidth,
@@ -27,11 +34,14 @@ int main() {
     int brushRadius = 3;
 
     while (!WindowShouldClose()) {
-        // Управление: рисуем частицы
-        if (IsMouseButtonDown(MOUSE_LEFT_BUTTON)) {
+        int sw = GetScreenWidth();
+        int sh = GetScreenHeight();
+
+        // Управление: рисуем частицы (защита от деления на ноль)
+        if (IsMouseButtonDown(MOUSE_LEFT_BUTTON) && sw > 0 && sh > 0) {
             Vector2 mousePos = GetMousePosition();
-            int x = (int)(mousePos.x / GetScreenWidth() * worldWidth);
-            int y = (int)(mousePos.y / GetScreenHeight() * worldHeight);
+            int x = (int)(mousePos.x / sw * worldWidth);
+            int y = (int)(mousePos.y / sh * worldHeight);
             world.SetParticleCircle(x, y, brushRadius, currentType);
         }
 
@@ -57,10 +67,12 @@ int main() {
         UpdateTexture(texture, world.GetPixels());
 
         // Рисуем текстуру растянутой на весь экран
-        DrawTexturePro(texture, 
-            { 0, 0, (float)worldWidth, (float)worldHeight },
-            { 0, 0, (float)GetScreenWidth(), (float)GetScreenHeight() },
-            { 0, 0 }, 0.0f, WHITE);
+        if (sw > 0 && sh > 0) {
+            DrawTexturePro(texture, 
+                { 0, 0, (float)worldWidth, (float)worldHeight },
+                { 0, 0, (float)sw, (float)sh },
+                { 0, 0 }, 0.0f, WHITE);
+        }
 
         DrawText(TextFormat("Brush: %d | 1-5: Type | []: Size", brushRadius), 10, 10, 20, RAYWHITE);
         EndDrawing();
